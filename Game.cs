@@ -7,8 +7,10 @@ namespace az_tanks_revived;
 public class Game : Microsoft.Xna.Framework.Game
 {
     private GraphicsDeviceManager _graphics;
+    private CollisionManager _collisionManager;
     private SpriteBatch _spriteBatch;
     private Maze _maze;
+    private Bullet _bullet;
 
     public Game()
     {
@@ -25,9 +27,11 @@ public class Game : Microsoft.Xna.Framework.Game
     protected override void Initialize()
     {
         base.Initialize();
+        _collisionManager = new CollisionManager();
 
         // Ініціалізація лабіринту
         _maze = new Maze(GraphicsDevice, 10, 15, 50);
+        _bullet = new Bullet(GraphicsDevice);
     }
 
     protected override void LoadContent()
@@ -42,10 +46,15 @@ public class Game : Microsoft.Xna.Framework.Game
         _spriteBatch.Begin();
 
         // Малюємо лабіринт
+        _bullet.Draw(_spriteBatch);
         _maze.Draw(_spriteBatch);
-
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+    protected override void Update(GameTime gameTime)
+    {
+        _bullet.Update(gameTime);
+        _collisionManager.CheckCollisions();
     }
 }

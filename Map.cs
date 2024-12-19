@@ -1,45 +1,49 @@
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace az_tanks_revived;
 
 public class Map
 {
-    public int Rows { get; } // Кількість рядків
-    public int Columns { get; } // Кількість стовпців
-    public bool[,] HorizontalWalls { get; } // Горизонтальні стіни
-    public bool[,] VerticalWalls { get; } // Вертикальні стіни
+    private GraphicsDevice _graphicsDevice;
+    public List<Wall> Walls { get; private set; } = new List<Wall>();
 
-    public Map(int rows, int columns)
+    public Map(GraphicsDevice graphicsDevice)
     {
-        Rows = rows;
-        Columns = columns;
-
-        // Масив для горизонтальних стін: (rows + 1) рядків, кожен довжиною columns
-        HorizontalWalls = new bool[rows + 1, columns];
-
-        // Масив для вертикальних стін: rows рядків, кожен довжиною (columns + 1)
-        VerticalWalls = new bool[rows, columns + 1];
+        _graphicsDevice = graphicsDevice;
     }
 
-    // Додати горизонтальну стіну
-    public void AddHorizontalWall(int row, int column)
+    // Додавання горизонтальної стіни
+    public void AddHorizontalWall(int row, int column, int cellSize, int wallThickness)
     {
-        if (row >= 0 && row <= Rows && column >= 0 && column < Columns)
-            HorizontalWalls[row, column] = true;
+        var bounds = new Rectangle(
+            column * cellSize, 
+            row * cellSize, 
+            cellSize + wallThickness, // Додаємо товщину для стикування
+            wallThickness
+        );
+        Walls.Add(new Wall(_graphicsDevice, bounds));
     }
 
-    // Додати вертикальну стіну
-    public void AddVerticalWall(int row, int column)
+    // Додавання вертикальної стіни
+    public void AddVerticalWall(int row, int column, int cellSize, int wallThickness)
     {
-        if (row >= 0 && row < Rows && column >= 0 && column <= Columns)
-            VerticalWalls[row, column] = true;
+        var bounds = new Rectangle(
+            column * cellSize, 
+            row * cellSize, 
+            wallThickness,
+            cellSize + wallThickness // Додаємо товщину для стикування
+        );
+        Walls.Add(new Wall(_graphicsDevice, bounds));
     }
 
-    // Перевірка, чи є стіна
-    public bool HasWall(int row, int column, bool isHorizontal)
+    public void Draw(SpriteBatch spriteBatch)
     {
-        if (isHorizontal)
-            return row >= 0 && row <= Rows && column >= 0 && column < Columns && HorizontalWalls[row, column];
-        else
-            return row >= 0 && row < Rows && column >= 0 && column <= Columns && VerticalWalls[row, column];
+        foreach (var wall in Walls)
+        {
+            wall.Draw(spriteBatch);
+        }
     }
 }
 
