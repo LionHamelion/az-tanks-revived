@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using az_tanks_revived.Scenes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -7,10 +8,9 @@ namespace az_tanks_revived;
 public class Game : Microsoft.Xna.Framework.Game
 {
     private GraphicsDeviceManager _graphics;
-    private CollisionManager _collisionManager;
     private SpriteBatch _spriteBatch;
-    private Maze _maze;
-    private Bullet _bullet;
+    private SceneManager sceneManager;
+   
 
     public Game()
     {
@@ -22,21 +22,19 @@ public class Game : Microsoft.Xna.Framework.Game
         _graphics.PreferredBackBufferWidth = 1280;
         _graphics.PreferredBackBufferHeight = 920;
         _graphics.ApplyChanges();
+
+        sceneManager = new();
     }
 
     protected override void Initialize()
     {
         base.Initialize();
-        _collisionManager = new CollisionManager();
-
-        // Ініціалізація лабіринту
-        _maze = new Maze(GraphicsDevice, 10, 15, 50);
-        _bullet = new Bullet(GraphicsDevice);
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        sceneManager.AddScene(new MenuScene(Content, GraphicsDevice, sceneManager));
     }
 
     protected override void Draw(GameTime gameTime)
@@ -45,16 +43,14 @@ public class Game : Microsoft.Xna.Framework.Game
 
         _spriteBatch.Begin();
 
-        // Малюємо лабіринт
-        _bullet.Draw(_spriteBatch);
-        _maze.Draw(_spriteBatch);
+        sceneManager.GetCurrentScene().Draw(_spriteBatch);
+        
         _spriteBatch.End();
 
         base.Draw(gameTime);
     }
     protected override void Update(GameTime gameTime)
     {
-        _bullet.Update(gameTime);
-        _collisionManager.CheckCollisions();
+        sceneManager.GetCurrentScene().Update(gameTime);
     }
 }
