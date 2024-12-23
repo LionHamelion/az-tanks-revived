@@ -1,4 +1,5 @@
-﻿using az_tanks_revived.Scenes;
+﻿using System;
+using az_tanks_revived.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,8 +10,8 @@ public class Game : Microsoft.Xna.Framework.Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private SceneManager sceneManager;
-   
+    private readonly SceneManager sceneManager;
+    private const int FrameRate = 60;
 
     public Game()
     {
@@ -23,7 +24,10 @@ public class Game : Microsoft.Xna.Framework.Game
         _graphics.PreferredBackBufferHeight = 920;
         _graphics.ApplyChanges();
 
-        sceneManager = new();
+        sceneManager = new SceneManager();
+
+        // Limit the frame rate to 10 FPS
+        TargetElapsedTime = TimeSpan.FromSeconds(1.0 / FrameRate);
     }
 
     protected override void Initialize()
@@ -34,7 +38,9 @@ public class Game : Microsoft.Xna.Framework.Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        sceneManager.AddScene(new MenuScene(Content, GraphicsDevice, sceneManager));
+
+        AssetManager.Instance.Initialize(Content, GraphicsDevice);
+        sceneManager.AddScene(new GameScene(Content, GraphicsDevice, sceneManager));
     }
 
     protected override void Draw(GameTime gameTime)

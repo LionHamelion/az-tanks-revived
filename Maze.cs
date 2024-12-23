@@ -1,4 +1,7 @@
+using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace az_tanks_revived;
 
@@ -8,11 +11,12 @@ public class Maze
     private int _cellSize;
     private int _wallThickness;
 
-    public Maze(GraphicsDevice graphicsDevice, int rows, int columns, int cellSize)
+    public Maze(int rows, int columns, int cellSize)
     {
         _cellSize = cellSize;
-        _wallThickness = 5;
-        _map = new Map(graphicsDevice);
+        _wallThickness = 25;
+        _map = new Map();
+        Point a = _map.ToMinimapCoordinates(new Point(24,44), _wallThickness, _cellSize);
 
         // Генерація стін
         AddPerimeterWalls(rows, columns);
@@ -36,12 +40,23 @@ public class Maze
 
     private void AddHardcodedWalls()
     {
-        _map.AddHorizontalWall(5, 1, _cellSize, _wallThickness);
-        // _map.AddHorizontalWall(1, 2, _cellSize, _wallThickness);
-        // _map.AddVerticalWall(1, 3, _cellSize, _wallThickness);
-        // _map.AddVerticalWall(2, 3, _cellSize, _wallThickness);
+        _map.AddVerticalWall(0, 1, _cellSize, _wallThickness);
+        _map.AddVerticalWall(1, 1, _cellSize, _wallThickness);
+        _map.AddVerticalWall(1, 2, _cellSize, _wallThickness);
+        _map.AddVerticalWall(3, 1, _cellSize, _wallThickness);
+        _map.AddHorizontalWall(2, 1, _cellSize, _wallThickness);
+        _map.AddHorizontalWall(3, 2, _cellSize, _wallThickness);
     }
+    public void Update(GameTime gameTime) {
+        // Отримання поточного стану миші
+        MouseState mouseState = Mouse.GetState();
 
+        if (mouseState.LeftButton == ButtonState.Pressed)
+        {
+            Console.WriteLine($"Mouse Clicked at: X = {mouseState.X}, Y = {mouseState.Y}");
+            Console.WriteLine(_map.ToMinimapCoordinates(new (mouseState.X, mouseState.Y), _wallThickness,_cellSize));
+        }
+    }
     public void Draw(SpriteBatch spriteBatch)
     {
         _map.Draw(spriteBatch);
