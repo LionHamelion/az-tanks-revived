@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using az_tanks_revived.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace az_tanks_revived;
 
@@ -40,6 +39,7 @@ public class Game : Microsoft.Xna.Framework.Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         AssetManager.Instance.Initialize(Content, GraphicsDevice);
+        DependencyFactory.RegisterSceneManager(sceneManager);
         sceneManager.AddScene(new GameScene(Content, GraphicsDevice, sceneManager));
     }
 

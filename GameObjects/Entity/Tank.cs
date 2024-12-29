@@ -2,7 +2,9 @@ using System;
 using az_tanks_revived.GameObjects.Static;
 using az_tanks_revived.HitboxSystem;
 using az_tanks_revived.Interfaces;
+using az_tanks_revived.Scenes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,6 +12,7 @@ namespace az_tanks_revived.GameObjects.Entity;
 
 public class Tank: Entity, ICollidable
 {
+    private readonly Turret turret;
     private Rectangle textureBounds = new Rectangle((int)-50f, (int)-70f, 100, 140);
     private float boundsWidth = 90;
     private float boundsHeight = 120;
@@ -25,9 +28,10 @@ public class Tank: Entity, ICollidable
             );
         }
     }
-    public Tank (Vector2 position, Vector2 velocity) {
+    public Tank (Vector2 position, Vector2 velocity, GameScene scene) {
         Transform.Position = position;
         Velocity = velocity;
+        turret = new BasicTurret(this);
     }
     public override void Draw(SpriteBatch spriteBatch)
     {
@@ -83,11 +87,11 @@ public class Tank: Entity, ICollidable
         else if (Keyboard.GetState().IsKeyDown(Keys.D)) {
             Velocity = new Vector2(4, 0);
         }
-        else if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
-            new Projectile(this, Transform.Position, new Vector2(0, 1));
-        }
         else {
             Velocity = Vector2.Zero;
+        }
+        if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
+            turret.Shoot();
         }
         base.Update(gameTime);
     }
@@ -112,5 +116,10 @@ public class Tank: Entity, ICollidable
             default:
                 break;
         }
+    }
+
+    internal void Load(ContentManager contentManager)
+    {
+        Console.WriteLine("Tank loaded");
     }
 }
