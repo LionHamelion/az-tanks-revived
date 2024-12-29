@@ -1,11 +1,12 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace az_tanks_revived;
 
-public class Maze
+public class Maze : GameObject
 {
     private Map _map;
     private int _cellSize;
@@ -47,7 +48,7 @@ public class Maze
         _map.AddHorizontalWall(2, 1, _cellSize, _wallThickness);
         _map.AddHorizontalWall(3, 2, _cellSize, _wallThickness);
     }
-    public void Update(GameTime gameTime) {
+    public override void Update(GameTime gameTime) {
         // Отримання поточного стану миші
         MouseState mouseState = Mouse.GetState();
 
@@ -57,8 +58,13 @@ public class Maze
             Console.WriteLine(_map.ToMinimapCoordinates(new (mouseState.X, mouseState.Y), _wallThickness,_cellSize));
         }
     }
-    public void Draw(SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         _map.Draw(spriteBatch);
+    }
+
+    public void Load(ContentManager contentManager)
+    {
+        Console.WriteLine("Maze loaded");
     }
 }

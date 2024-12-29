@@ -1,7 +1,9 @@
+using System;
 using az_tanks_revived.GameObjects.Static;
 using az_tanks_revived.HitboxSystem;
 using az_tanks_revived.Interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace az_tanks_revived.GameObjects.Entity;
@@ -23,19 +25,22 @@ public class Projectile: Entity, ICollidable
             );
         }
     }
-    public Projectile (Vector2 position, Vector2 velocity) {
+    private Texture2D circleTexture;
+    public Projectile(Vector2 position, Vector2 velocity) 
+    {
         Transform.Position = position;
         Velocity = velocity;
         initialSpeed = velocity.Length();
     }
-    public Projectile (Tank owner, Vector2 position, Vector2 velocity) {
+
+    public Projectile(Tank owner, Vector2 position, Vector2 velocity): this(position, velocity)
+    {
         this.owner = owner;
-        Transform.Position = position;
-        Velocity = velocity;
     }
+
     public override void Draw(SpriteBatch spriteBatch)
     {
-        Texture2D circleTexture = AssetManager.Instance.GetCircleTexture(50, Color.Black);
+        circleTexture = AssetManager.Instance.GetCircleTexture(50, Color.Black);
         Texture2D pixel = AssetManager.Instance.GetPixelTexture();
         Texture2D hitbox = AssetManager.Instance.GetCircleTexture((int)boundsRadius, Color.Red, filled: false);
         spriteBatch.Draw(
@@ -99,5 +104,10 @@ public class Projectile: Entity, ICollidable
     {
         textureBounds = Rectangle.Empty;
         // boundsRadius = 0;
+    }
+
+    internal void Load(ContentManager contentManager)
+    {
+        Console.WriteLine("Projectile loaded");
     }
 }
