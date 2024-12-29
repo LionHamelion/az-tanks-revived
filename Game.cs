@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using az_tanks_revived.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +11,7 @@ public class Game : Microsoft.Xna.Framework.Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private readonly SceneManager sceneManager;
-    private const int FrameRate = 60;
+    private const int FrameRate = 160;
 
     public Game()
     {
@@ -26,7 +26,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
         sceneManager = new SceneManager();
 
-        // Limit the frame rate to 10 FPS
+        // Встановлення частоти кадрів
         TargetElapsedTime = TimeSpan.FromSeconds(1.0 / FrameRate);
     }
 
